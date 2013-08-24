@@ -1,0 +1,8 @@
+﻿## Interface: 50300
+## Title: Devil May Cry |cFF99CC01rev|r |cFFFF00001.0.0|r
+## Version: 1.0.0
+## Author: Resike
+## Notes: Devil May Cry 5 ranks style gui and sound system.
+## DefaultState: Enabled
+
+DevilMayCry.lua
