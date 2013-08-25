@@ -46,7 +46,9 @@ local backgroundTextures = {
 	[2] = [[Interface\Addons\DevilMayCry\Textures\CB]],
 	[3] = [[Interface\Addons\DevilMayCry\Textures\BB]],
 	[4] = [[Interface\Addons\DevilMayCry\Textures\AB]],
-	[5] = [[Interface\Addons\DevilMayCry\Textures\SB]]
+	[5] = [[Interface\Addons\DevilMayCry\Textures\SB]],
+	[6] = [[Interface\Addons\DevilMayCry\Textures\SB]],
+	[7] = [[Interface\Addons\DevilMayCry\Textures\SB]]
 }
 
 local foregroundTextures = {
@@ -54,7 +56,19 @@ local foregroundTextures = {
 	[2] = [[Interface\Addons\DevilMayCry\Textures\CF]],
 	[3] = [[Interface\Addons\DevilMayCry\Textures\BF]],
 	[4] = [[Interface\Addons\DevilMayCry\Textures\AF]],
-	[5] = [[Interface\Addons\DevilMayCry\Textures\SF]]
+	[5] = [[Interface\Addons\DevilMayCry\Textures\SF]],
+	[6] = [[Interface\Addons\DevilMayCry\Textures\SF]],
+	[7] = [[Interface\Addons\DevilMayCry\Textures\SF]]
+}
+
+local streakSounds = {
+	[1] = [[Interface\Addons\DevilMayCry\Sounds\1Dirty.mp3]],
+	[2] = [[Interface\Addons\DevilMayCry\Sounds\2Cruel.mp3]],
+	[3] = [[Interface\Addons\DevilMayCry\Sounds\3Brutal.mp3]],
+	[4] = [[Interface\Addons\DevilMayCry\Sounds\4Anarhic.mp3]],
+	[5] = [[Interface\Addons\DevilMayCry\Sounds\5Savage.mp3]],
+	[6] = [[Interface\Addons\DevilMayCry\Sounds\6Sadistic.mp3]],
+	[7] = [[Interface\Addons\DevilMayCry\Sounds\7Sensational.mp3]]
 }
 
 local frame = CreateFrame("Frame", nil, UIParent)
@@ -68,6 +82,8 @@ frame:SetMovable(true)
 frame:EnableMouse(true)
 frame:SetClampedToScreen(false)
 frame:RegisterForDrag("LeftButton")
+
+local testframe = CreateFrame("Frame", nil, UIParent)
 
 local bgTexture = frame:CreateTexture(nil, "Background")
 bgTexture:SetTexture(backgroundTextures[currentRank])
@@ -101,23 +117,40 @@ frame:SetScript("OnMouseUp", function(self, button)
 	end
 end)
 
-function DevilMayCry_IncreaseHeight(percent)
-	if fgTexture:GetHeight() < (BASE_SIZE * (1 - percent)) then
-		percentCompleted = percentCompleted + percent
-	else
-		percentCompleted = 1
-		currentScale = MAX_SCALE
-	end
+function DevilMayCry:IncreaseHeight(percent)
+	percentCompleted = percentCompleted + percent
 	WIDTH_SCALE = 1.12
 end
 
+local extraSTexture = frame:CreateTexture(nil, "Background")
+extraSTexture:SetPoint("BottomRight", fgTexture, "BottomLeft", 50, 0)
+
+local extraSSTexture = frame:CreateTexture(nil, "Background")
+extraSSTexture:SetPoint("BottomRight", extraTexture, "BottomLeft", 50, 0)
+
 function DevilMayCry:TestMode()
 	percentCompleted = 0
-	if bgTexture:GetTexture() ~= backgroundTextures[currentRank] then
+	if currentRank == 6 then
+		extraSTexture:Show()
+		extraSTexture:SetTexture(foregroundTextures[currentRank])
 		bgTexture:SetTexture(backgroundTextures[currentRank])
-	end
-	if fgTexture:GetTexture() ~= foregroundTextures[currentRank] then
 		fgTexture:SetTexture(foregroundTextures[currentRank])
+	elseif currentRank == 7 then
+		extraSTexture:Show()
+		extraSTexture:SetTexture(foregroundTextures[currentRank])
+		extraSSTexture:Show()
+		extraSSTexture:SetTexture(foregroundTextures[currentRank])
+		bgTexture:SetTexture(backgroundTextures[currentRank])
+		fgTexture:SetTexture(foregroundTextures[currentRank])
+	else
+		extraSTexture:Hide()
+		extraSSTexture:Hide()
+		if bgTexture:GetTexture() ~= backgroundTextures[currentRank] then
+			bgTexture:SetTexture(backgroundTextures[currentRank])
+		end
+		if fgTexture:GetTexture() ~= foregroundTextures[currentRank] then
+			fgTexture:SetTexture(foregroundTextures[currentRank])
+		end
 	end
 	currentScale = MAX_SCALE
 end
@@ -143,12 +176,9 @@ do
 		end
 		timer = 0
 		local size = BASE_SIZE
-		if testMode then
-			percentCompleted = percentCompleted + 0.0015
-		else
-			percentCompleted = percentCompleted - 0.0015
-		end
+		percentCompleted = percentCompleted - 0.0015
 		if percentCompleted >= 1 then
+			PlaySoundFile(streakSounds[currentRank], "Master")
 			currentRank = currentRank + 1
 			if currentRank > table.getn(backgroundTextures) then
 				currentRank = 1
@@ -178,5 +208,19 @@ do
 			SetSize(self, size, size)
 		end
 		SetTexCoord(fgTexture, 0, 1, 1 - percentCompleted, 1)
+	end)
+end
+
+do
+	local timer = 0
+	testframe:SetScript("OnUpdate", function(self, elapsed)
+		timer = timer + elapsed
+		if timer < 1 or not testMode then
+			return
+		end
+		timer = 0
+		if testMode then
+			DevilMayCry:IncreaseHeight(0.3)
+		end
 	end)
 end
