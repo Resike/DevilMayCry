@@ -126,7 +126,7 @@ local extraSTexture = frame:CreateTexture(nil, "Background")
 extraSTexture:SetPoint("BottomRight", fgTexture, "BottomLeft", 50, 0)
 
 local extraSSTexture = frame:CreateTexture(nil, "Background")
-extraSSTexture:SetPoint("BottomRight", extraTexture, "BottomLeft", 50, 0)
+extraSSTexture:SetPoint("BottomRight", extraSTexture, "BottomLeft", 50, 0)
 
 function DevilMayCry:TestMode()
 	percentCompleted = 0
