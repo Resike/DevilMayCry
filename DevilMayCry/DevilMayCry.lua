@@ -2,6 +2,30 @@ local _, ns = ...
 local DevilMayCry = { }
 ns.DevilMayCry = DevilMayCry
 
+local DefaultSettings = {
+	x = 0,
+	y = 0
+}
+
+function DevilMayCry:CopySettings(src, dst)
+	if type(src) ~= "table" then
+		return { }
+	end
+	if type(dst) then
+		dst = { }
+	end
+	for k, v in pairs(src) do
+		if type(v) == "table" then
+			dst[k] = DevilMayCry:CopySettings(v, dst[k])
+		elseif type(v) ~= type(dst[k]) then
+			dst[k] = v
+		end
+	end
+	return dst
+end
+
+DevilMayCryVars = DevilMayCry:CopySettings(DefaultSettings, DevilMayCryVars)
+
 local BASE_SIZE = 128
 local MAX_SIZE = BASE_SIZE * 2.4
 local UPDATE_INTERVAL = 0.005
@@ -9,11 +33,33 @@ local UPDATE_INTERVAL = 0.005
 local SCALE_DELTA = 0.06
 local MAX_SCALE = MAX_SIZE / BASE_SIZE + SCALE_DELTA
 local WIDTH_SCALE = 1
+local WIDTH_DELTA = 0.005
 
-local currentScale, percentCompleted = 1, 1
+local currentScale, percentCompleted = 1, 0
+
+local testMode = true
+
+local currentRank = 1
+
+local backgroundTextures = {
+	[1] = [[Interface\Addons\DevilMayCry\Textures\DB]],
+	[2] = [[Interface\Addons\DevilMayCry\Textures\CB]],
+	[3] = [[Interface\Addons\DevilMayCry\Textures\BB]],
+	[4] = [[Interface\Addons\DevilMayCry\Textures\AB]],
+	[5] = [[Interface\Addons\DevilMayCry\Textures\SB]]
+}
+
+local foregroundTextures = {
+	[1] = [[Interface\Addons\DevilMayCry\Textures\DF]],
+	[2] = [[Interface\Addons\DevilMayCry\Textures\CF]],
+	[3] = [[Interface\Addons\DevilMayCry\Textures\BF]],
+	[4] = [[Interface\Addons\DevilMayCry\Textures\AF]],
+	[5] = [[Interface\Addons\DevilMayCry\Textures\SF]]
+}
 
 local frame = CreateFrame("Frame", nil, UIParent)
-frame:SetPoint("Center", 500, 450)
+frame:RegisterEvent("ADDON_LOADED")
+frame:SetPoint("Center", DevilMayCryVars.x, DevilMayCryVars.y)
 frame:SetFrameStrata("Medium")
 frame:SetFrameLevel(0)
 frame:SetWidth(BASE_SIZE)
@@ -24,14 +70,14 @@ frame:SetClampedToScreen(false)
 frame:RegisterForDrag("LeftButton")
 
 local bgTexture = frame:CreateTexture(nil, "Background")
-bgTexture:SetTexture([[Interface\Addons\DevilMayCry\Textures\DB]])
+bgTexture:SetTexture(backgroundTextures[currentRank])
 bgTexture:SetWidth(BASE_SIZE)
 bgTexture:SetHeight(BASE_SIZE)
 bgTexture:SetAllPoints()
 bgTexture:SetDrawLayer("Background", 5)
 
 local fgTexture = frame:CreateTexture(nil, "Background")
-fgTexture:SetTexture([[Interface\Addons\DevilMayCry\Textures\DF]])
+fgTexture:SetTexture(foregroundTextures[currentRank])
 fgTexture:SetWidth(BASE_SIZE)
 fgTexture:SetHeight(BASE_SIZE)
 fgTexture:SetPoint("Bottom")
@@ -48,6 +94,8 @@ frame:SetScript("OnMouseUp", function(self, button)
 		self:StopMovingOrSizing()
 		local L1, B1, W1, H1 = UIParent:GetRect()
 		local L2, B2, W2, H2 = self:GetRect()
+		DevilMayCryVars.x = L2 - L1 + (W2 - W1) / 2
+		DevilMayCryVars.y = B2 - B1 + (H2 - H1) / 2
 		self:ClearAllPoints()
 		self:SetPoint("CENTER", L2 - L1 + (W2 - W1) / 2, B2 - B1 + (H2 - H1) / 2)
 	end
@@ -63,6 +111,27 @@ function DevilMayCry_IncreaseHeight(percent)
 	WIDTH_SCALE = 1.12
 end
 
+function DevilMayCry:TestMode()
+	percentCompleted = 0
+	if bgTexture:GetTexture() ~= backgroundTextures[currentRank] then
+		bgTexture:SetTexture(backgroundTextures[currentRank])
+	end
+	if fgTexture:GetTexture() ~= foregroundTextures[currentRank] then
+		fgTexture:SetTexture(foregroundTextures[currentRank])
+	end
+	currentScale = MAX_SCALE
+end
+
+frame:SetScript("OnEvent", function(self, event, ...)
+	if event == "ADDON_LOADED" then
+		local Addon = ...
+		if Addon == "DevilMayCry" then
+			frame:SetPoint("Center", DevilMayCryVars.x, DevilMayCryVars.y)
+			frame:UnregisterEvent("ADDON_LOADED")
+		end
+	end
+end)
+
 local SetSize, SetTexCoord = frame.SetSize, fgTexture.SetTexCoord
 
 do
@@ -74,14 +143,24 @@ do
 		end
 		timer = 0
 		local size = BASE_SIZE
-		percentCompleted = percentCompleted - 0.0015
-		if percentCompleted < 0 then
+		if testMode then
+			percentCompleted = percentCompleted + 0.0015
+		else
+			percentCompleted = percentCompleted - 0.0015
+		end
+		if percentCompleted >= 1 then
+			currentRank = currentRank + 1
+			if currentRank > table.getn(backgroundTextures) then
+				currentRank = 1
+			end
 			-- Test loop
-			percentCompleted = 1
-			currentScale = MAX_SCALE
+			DevilMayCry:TestMode()
+		end
+		if percentCompleted <= 0 then
+			-- Hide animation
 		end
 		if currentScale > 1 then
-			currentScale = currentScale - 0.06
+			currentScale = currentScale - SCALE_DELTA
 			if currentScale < 1 then
 				currentScale = 1
 			end
@@ -90,7 +169,7 @@ do
 		end
 		SetSize(fgTexture, size * WIDTH_SCALE, size * percentCompleted)
 		if WIDTH_SCALE > 1 then
-			WIDTH_SCALE = WIDTH_SCALE - 0.005
+			WIDTH_SCALE = WIDTH_SCALE - WIDTH_DELTA
 			if WIDTH_SCALE < 1 then
 				WIDTH_SCALE = 1
 			end

@@ -4,5 +4,6 @@
 ## Author: Resike
 ## Notes: Devil May Cry 5 ranks style gui and sound system.
 ## DefaultState: Enabled
+## SavedVariablesPerCharacter: DevilMayCryVars
 
 DevilMayCry.lua
