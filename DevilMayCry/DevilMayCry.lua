@@ -36,10 +36,24 @@ local WIDTH_SCALE = 1
 local WIDTH_DELTA = 0.005
 
 local currentScale, percentCompleted = 1, 0
+local zoomAnimEnded = false
+local slideAnimEnded = false
 
 local testMode = true
 
 local currentRank = 1
+
+currentPos = 0
+
+local currentRelativePos = {
+	[1] = 250, -- Dirty!
+	[2] = 250, -- Cruel!
+	[3] = 260, -- Brutal!
+	[4] = 270, -- Anarhic!
+	[5] = 260, -- Savage!
+	[6] = 280, -- Sadistic!
+	[7] = 310  -- Sensational!
+}
 
 local backgroundTextures = {
 	[1] = [[Interface\Addons\DevilMayCry\Textures\DB]],
@@ -83,6 +97,8 @@ frame:EnableMouse(true)
 frame:SetClampedToScreen(false)
 frame:RegisterForDrag("LeftButton")
 
+local animframe = CreateFrame("Frame", nil, UIParent)
+
 local testframe = CreateFrame("Frame", nil, UIParent)
 
 local bgTexture = frame:CreateTexture(nil, "Background")
@@ -96,7 +112,7 @@ local fgTexture = frame:CreateTexture(nil, "Background")
 fgTexture:SetTexture(foregroundTextures[currentRank])
 fgTexture:SetWidth(BASE_SIZE)
 fgTexture:SetHeight(BASE_SIZE)
-fgTexture:SetPoint("Bottom")
+fgTexture:SetPoint("Bottom", frame, "Bottom")
 fgTexture:SetDrawLayer("Background", 6)
 
 frame:SetScript("OnMouseDown", function(self, button)
@@ -123,9 +139,13 @@ function DevilMayCry:IncreaseHeight(percent)
 end
 
 local extraSTexture = frame:CreateTexture(nil, "Background")
-extraSTexture:SetPoint("BottomRight", fgTexture, "BottomLeft", 50, 0)
+extraSTexture:SetWidth(BASE_SIZE)
+extraSTexture:SetHeight(BASE_SIZE)
+extraSTexture:SetPoint("BottomRight", bgTexture, "BottomLeft", 50, 0)
 
 local extraSSTexture = frame:CreateTexture(nil, "Background")
+extraSSTexture:SetWidth(BASE_SIZE)
+extraSSTexture:SetHeight(BASE_SIZE)
 extraSSTexture:SetPoint("BottomRight", extraSTexture, "BottomLeft", 50, 0)
 
 function DevilMayCry:TestMode()
@@ -152,7 +172,6 @@ function DevilMayCry:TestMode()
 			fgTexture:SetTexture(foregroundTextures[currentRank])
 		end
 	end
-	currentScale = MAX_SCALE
 end
 
 frame:SetScript("OnEvent", function(self, event, ...)
@@ -178,11 +197,12 @@ do
 		local size = BASE_SIZE
 		percentCompleted = percentCompleted - 0.0015
 		if percentCompleted >= 1 then
-			PlaySoundFile(streakSounds[currentRank], "Master")
 			currentRank = currentRank + 1
-			if currentRank > table.getn(backgroundTextures) then
+			if currentRank >= table.getn(backgroundTextures) then
 				currentRank = 1
 			end
+			PlaySoundFile(streakSounds[currentRank], "Master")
+			currentScale = MAX_SCALE
 			-- Test loop
 			DevilMayCry:TestMode()
 		end
@@ -192,6 +212,7 @@ do
 		if currentScale > 1 then
 			currentScale = currentScale - SCALE_DELTA
 			if currentScale < 1 then
+				zoomAnimEnded = true
 				currentScale = 1
 			end
 			size = size * currentScale
@@ -211,6 +232,53 @@ do
 	end)
 end
 
+local time
+
+do
+	local timer = 0
+	animframe:SetScript("OnUpdate", function(self, elapsed)
+		timer = timer + elapsed
+		if timer < UPDATE_INTERVAL then
+			return
+		end
+		timer = 0
+		if zoomAnimEnded then
+			if currentPos < currentRelativePos[currentRank] then
+				currentPos = currentPos + 14
+				bgTexture:ClearAllPoints()
+				bgTexture:SetPoint("Center", frame, "Center", - currentPos, 0)
+				fgTexture:ClearAllPoints()
+				fgTexture:SetPoint("Bottom", frame, "Bottom", - currentPos, 0)
+			else
+				if not time then
+					time = GetTime()
+				end
+				if time + 3 < GetTime() then
+					time = nil
+					currentPos = currentRelativePos[currentRank]
+					zoomAnimEnded = false
+					slideAnimEnded = true
+				end
+			end
+		end
+		if slideAnimEnded then
+			currentPos = currentPos - 14
+			bgTexture:ClearAllPoints()
+			bgTexture:SetPoint("Center", frame, "Center", - currentPos, 0)
+			fgTexture:ClearAllPoints()
+			fgTexture:SetPoint("Bottom", frame, "Bottom", - currentPos, 0)
+			if currentPos < 0 then
+				currentPos = 0
+				slideAnimEnded = false
+				extraSTexture:Hide()
+				extraSSTexture:Hide()
+				bgTexture:SetAllPoints(frame)
+				fgTexture:SetPoint("Bottom", frame, "Bottom")
+			end
+		end
+	end)
+end
+
 do
 	local timer = 0
 	testframe:SetScript("OnUpdate", function(self, elapsed)
@@ -220,7 +288,7 @@ do
 		end
 		timer = 0
 		if testMode then
-			DevilMayCry:IncreaseHeight(0.3)
+			DevilMayCry:IncreaseHeight(0.2)
 		end
 	end)
 end
