@@ -37,6 +37,7 @@ local WIDTH_SCALE = 1
 local WIDTH_DELTA = 0.005
 
 local currentScale, percentCompleted = 1, 0
+
 local zoomAnimEnded = false
 local slideAnimEnded = false
 
@@ -46,6 +47,8 @@ local currentRank = 1
 
 local currentPos = 0
 local currentSpPos = 0
+
+local time
 
 local currentRelativePos = {
 	[1] = 250, -- Dirty!
@@ -155,11 +158,13 @@ local extraSTexture = frame:CreateTexture(nil, "Background")
 extraSTexture:SetWidth(BASE_SIZE)
 extraSTexture:SetHeight(BASE_SIZE)
 extraSTexture:SetPoint("BottomRight", bgTexture, "BottomLeft", 50, 0)
+extraSTexture:SetDrawLayer("Background", 6)
 
 local extraSSTexture = frame:CreateTexture(nil, "Background")
 extraSSTexture:SetWidth(BASE_SIZE)
 extraSSTexture:SetHeight(BASE_SIZE)
 extraSSTexture:SetPoint("BottomRight", extraSTexture, "BottomLeft", 50, 0)
+extraSSTexture:SetDrawLayer("Background", 6)
 
 function DevilMayCry:TestMode()
 	percentCompleted = 0
@@ -211,7 +216,7 @@ do
 		percentCompleted = percentCompleted - 0.0015
 		if percentCompleted >= 1 then
 			currentRank = currentRank + 1
-			if currentRank >= table.getn(backgroundTextures) then
+			if currentRank > table.getn(backgroundTextures) then
 				currentRank = 1
 			end
 			if DevilMayCryVars.sound then
@@ -246,8 +251,6 @@ do
 		SetTexCoord(fgTexture, 0, 1, 1 - percentCompleted, 1)
 	end)
 end
-
-local time
 
 do
 	local timer = 0
@@ -290,13 +293,15 @@ do
 			fgTexture:SetPoint("Bottom", frame, "Bottom", - currentPos, 0)
 			if currentPos < 0 then
 				currentPos = 0
+				currentSpPos = 0
 				slideAnimEnded = false
 				extraSTexture:Hide()
 				extraSSTexture:Hide()
-				spTexture:Hide()
-				spTexture:SetWidth(700)
 				bgTexture:SetAllPoints(frame)
 				fgTexture:SetPoint("Bottom", frame, "Bottom")
+				spTexture:Hide()
+				spTexture:SetWidth(700)
+				spTexture:ClearAllPoints()
 				spTexture:SetPoint("Right", frame, "Right", 150, - 5)
 			end
 		end
