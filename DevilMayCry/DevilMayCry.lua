@@ -4,7 +4,8 @@ ns.DevilMayCry = DevilMayCry
 
 local DefaultSettings = {
 	x = 0,
-	y = 0
+	y = 0,
+	sound = true
 }
 
 function DevilMayCry:CopySettings(src, dst)
@@ -96,6 +97,7 @@ frame:SetMovable(true)
 frame:EnableMouse(true)
 frame:SetClampedToScreen(false)
 frame:RegisterForDrag("LeftButton")
+frame:RegisterForDrag("RightButton")
 
 local animframe = CreateFrame("Frame", nil, UIParent)
 
@@ -130,6 +132,8 @@ frame:SetScript("OnMouseUp", function(self, button)
 		DevilMayCryVars.y = B2 - B1 + (H2 - H1) / 2
 		self:ClearAllPoints()
 		self:SetPoint("CENTER", L2 - L1 + (W2 - W1) / 2, B2 - B1 + (H2 - H1) / 2)
+	elseif button == "RightButton" then
+		DevilMayCryVars.sound = not DevilMayCryVars.sound
 	end
 end)
 
@@ -201,7 +205,9 @@ do
 			if currentRank >= table.getn(backgroundTextures) then
 				currentRank = 1
 			end
-			PlaySoundFile(streakSounds[currentRank], "Master")
+			if DevilMayCryVars.sound then
+				PlaySoundFile(streakSounds[currentRank], "Master")
+			end
 			currentScale = MAX_SCALE
 			-- Test loop
 			DevilMayCry:TestMode()
