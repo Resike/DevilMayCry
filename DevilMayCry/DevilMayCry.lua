@@ -121,12 +121,16 @@ fgTexture:SetHeight(BASE_SIZE)
 fgTexture:SetPoint("Bottom", frame, "Bottom")
 fgTexture:SetDrawLayer("Background", 6)
 
-local spTexture = frame:CreateTexture(nil, "Background")
+local bgframe = CreateFrame("Frame", nil, UIParent)
+bgframe:SetFrameStrata("Background")
+bgframe:SetAllPoints(frame)
+
+local spTexture = bgframe:CreateTexture(nil, "Background")
 spTexture:SetTexture([[Interface\Addons\DevilMayCry\Textures\Splat1]])
 spTexture:SetWidth(700)
 spTexture:SetHeight(700)
-spTexture:SetPoint("Right", frame, "Right", 150, - 5)
-spTexture:SetDrawLayer("Background", 1)
+spTexture:SetPoint("Right", bgframe, "Right", 150, - 5)
+spTexture:SetDrawLayer("Background", 0)
 spTexture:Hide()
 
 frame:SetScript("OnMouseDown", function(self, button)
@@ -157,13 +161,13 @@ end
 local extraSTexture = frame:CreateTexture(nil, "Background")
 extraSTexture:SetWidth(BASE_SIZE)
 extraSTexture:SetHeight(BASE_SIZE)
-extraSTexture:SetPoint("BottomRight", bgTexture, "BottomLeft", 50, 0)
+extraSTexture:SetPoint("Right", bgTexture, "Left", 50, 0)
 extraSTexture:SetDrawLayer("Background", 6)
 
 local extraSSTexture = frame:CreateTexture(nil, "Background")
 extraSSTexture:SetWidth(BASE_SIZE)
 extraSSTexture:SetHeight(BASE_SIZE)
-extraSSTexture:SetPoint("BottomRight", extraSTexture, "BottomLeft", 50, 0)
+extraSSTexture:SetPoint("Right", extraSTexture, "Left", 50, 0)
 extraSSTexture:SetDrawLayer("Background", 6)
 
 function DevilMayCry:TestMode()
@@ -282,7 +286,7 @@ do
 			end
 			currentSpPos = currentSpPos + 0.15
 			spTexture:ClearAllPoints()
-			spTexture:SetPoint("Right", frame, "Right", 150 - currentSpPos, - 5)
+			spTexture:SetPoint("Right", bgframe, "Right", 150 - currentSpPos, - 5)
 		end
 		if slideAnimEnded then
 			currentPos = currentPos - 14
@@ -302,7 +306,7 @@ do
 				spTexture:Hide()
 				spTexture:SetWidth(700)
 				spTexture:ClearAllPoints()
-				spTexture:SetPoint("Right", frame, "Right", 150, - 5)
+				spTexture:SetPoint("Right", bgframe, "Right", 150, - 5)
 			end
 		end
 	end)
