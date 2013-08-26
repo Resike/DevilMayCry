@@ -44,7 +44,8 @@ local testMode = true
 
 local currentRank = 1
 
-currentPos = 0
+local currentPos = 0
+local currentSpPos = 0
 
 local currentRelativePos = {
 	[1] = 250, -- Dirty!
@@ -52,8 +53,8 @@ local currentRelativePos = {
 	[3] = 260, -- Brutal!
 	[4] = 270, -- Anarhic!
 	[5] = 260, -- Savage!
-	[6] = 280, -- Sadistic!
-	[7] = 310  -- Sensational!
+	[6] = 290, -- Sadistic!!
+	[7] = 330  -- Sensational!!!
 }
 
 local backgroundTextures = {
@@ -116,6 +117,14 @@ fgTexture:SetWidth(BASE_SIZE)
 fgTexture:SetHeight(BASE_SIZE)
 fgTexture:SetPoint("Bottom", frame, "Bottom")
 fgTexture:SetDrawLayer("Background", 6)
+
+local spTexture = frame:CreateTexture(nil, "Background")
+spTexture:SetTexture([[Interface\Addons\DevilMayCry\Textures\Splat1]])
+spTexture:SetWidth(700)
+spTexture:SetHeight(700)
+spTexture:SetPoint("Right", frame, "Right", 150, - 5)
+spTexture:SetDrawLayer("Background", 1)
+spTexture:Hide()
 
 frame:SetScript("OnMouseDown", function(self, button)
 	if button == "LeftButton" then
@@ -251,6 +260,8 @@ do
 		if zoomAnimEnded then
 			if currentPos < currentRelativePos[currentRank] then
 				currentPos = currentPos + 14
+				spTexture:Show()
+				spTexture:SetWidth(spTexture:GetWidth() + (currentPos / 14))
 				bgTexture:ClearAllPoints()
 				bgTexture:SetPoint("Center", frame, "Center", - currentPos, 0)
 				fgTexture:ClearAllPoints()
@@ -266,9 +277,13 @@ do
 					slideAnimEnded = true
 				end
 			end
+			currentSpPos = currentSpPos + 0.15
+			spTexture:ClearAllPoints()
+			spTexture:SetPoint("Right", frame, "Right", 150 - currentSpPos, - 5)
 		end
 		if slideAnimEnded then
 			currentPos = currentPos - 14
+			spTexture:SetWidth(spTexture:GetWidth() - (currentPos / 10))
 			bgTexture:ClearAllPoints()
 			bgTexture:SetPoint("Center", frame, "Center", - currentPos, 0)
 			fgTexture:ClearAllPoints()
@@ -278,8 +293,11 @@ do
 				slideAnimEnded = false
 				extraSTexture:Hide()
 				extraSSTexture:Hide()
+				spTexture:Hide()
+				spTexture:SetWidth(700)
 				bgTexture:SetAllPoints(frame)
 				fgTexture:SetPoint("Bottom", frame, "Bottom")
+				spTexture:SetPoint("Right", frame, "Right", 150, - 5)
 			end
 		end
 	end)
