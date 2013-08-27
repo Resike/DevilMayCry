@@ -121,15 +121,18 @@ fgTexture:SetHeight(BASE_SIZE)
 fgTexture:SetPoint("Bottom", frame, "Bottom")
 fgTexture:SetDrawLayer("Background", 6)
 
-local bgframe = CreateFrame("Frame", nil, UIParent)
-bgframe:SetFrameStrata("Background")
-bgframe:SetAllPoints(frame)
+local spframe = CreateFrame("Frame", nil, UIParent)
+spframe:SetPoint("Center", DevilMayCryVars.x, DevilMayCryVars.y)
+spframe:SetFrameStrata("Background")
+spframe:SetFrameLevel(0)
+spframe:SetWidth(BASE_SIZE)
+spframe:SetHeight(BASE_SIZE)
 
-local spTexture = bgframe:CreateTexture(nil, "Background")
+local spTexture = spframe:CreateTexture(nil, "Background")
 spTexture:SetTexture([[Interface\Addons\DevilMayCry\Textures\Splat1]])
 spTexture:SetWidth(700)
 spTexture:SetHeight(700)
-spTexture:SetPoint("Right", bgframe, "Right", 150, - 5)
+spTexture:SetPoint("Right", spframe, "Right", 150, - 5)
 spTexture:SetDrawLayer("Background", 0)
 spTexture:Hide()
 
@@ -153,7 +156,7 @@ frame:SetScript("OnMouseUp", function(self, button)
 	end
 end)
 
-function DevilMayCry:IncreaseHeight(percent)
+function DevilMayCry_IncreaseHeight(percent)
 	percentCompleted = percentCompleted + percent
 	WIDTH_SCALE = 1.12
 end
@@ -161,7 +164,7 @@ end
 local extraSTexture = frame:CreateTexture(nil, "Background")
 extraSTexture:SetWidth(BASE_SIZE)
 extraSTexture:SetHeight(BASE_SIZE)
-extraSTexture:SetPoint("Right", bgTexture, "Left", 50, 0)
+extraSTexture:SetPoint("Right", frame, "Left", 50, 0)
 extraSTexture:SetDrawLayer("Background", 6)
 
 local extraSSTexture = frame:CreateTexture(nil, "Background")
@@ -171,28 +174,11 @@ extraSSTexture:SetPoint("Right", extraSTexture, "Left", 50, 0)
 extraSSTexture:SetDrawLayer("Background", 6)
 
 function DevilMayCry:TestMode()
-	percentCompleted = 0
-	if currentRank == 6 then
-		extraSTexture:Show()
-		extraSTexture:SetTexture(foregroundTextures[currentRank])
+	if bgTexture:GetTexture() ~= backgroundTextures[currentRank] then
 		bgTexture:SetTexture(backgroundTextures[currentRank])
+	end
+	if fgTexture:GetTexture() ~= foregroundTextures[currentRank] then
 		fgTexture:SetTexture(foregroundTextures[currentRank])
-	elseif currentRank == 7 then
-		extraSTexture:Show()
-		extraSTexture:SetTexture(foregroundTextures[currentRank])
-		extraSSTexture:Show()
-		extraSSTexture:SetTexture(foregroundTextures[currentRank])
-		bgTexture:SetTexture(backgroundTextures[currentRank])
-		fgTexture:SetTexture(foregroundTextures[currentRank])
-	else
-		extraSTexture:Hide()
-		extraSSTexture:Hide()
-		if bgTexture:GetTexture() ~= backgroundTextures[currentRank] then
-			bgTexture:SetTexture(backgroundTextures[currentRank])
-		end
-		if fgTexture:GetTexture() ~= foregroundTextures[currentRank] then
-			fgTexture:SetTexture(foregroundTextures[currentRank])
-		end
 	end
 end
 
@@ -201,6 +187,7 @@ frame:SetScript("OnEvent", function(self, event, ...)
 		local Addon = ...
 		if Addon == "DevilMayCry" then
 			frame:SetPoint("Center", DevilMayCryVars.x, DevilMayCryVars.y)
+			spframe:SetPoint("Center", DevilMayCryVars.x, DevilMayCryVars.y)
 			frame:UnregisterEvent("ADDON_LOADED")
 		end
 	end
@@ -227,8 +214,11 @@ do
 				PlaySoundFile(streakSounds[currentRank], "Master")
 			end
 			currentScale = MAX_SCALE
+			percentCompleted = 0
 			-- Test loop
 			DevilMayCry:TestMode()
+			zoomAnimEnded = false
+			slideAnimEnded = true
 		end
 		if percentCompleted <= 0 then
 			-- Hide animation
@@ -269,10 +259,11 @@ do
 				currentPos = currentPos + 14
 				spTexture:Show()
 				spTexture:SetWidth(spTexture:GetWidth() + (currentPos / 14))
-				bgTexture:ClearAllPoints()
-				bgTexture:SetPoint("Center", frame, "Center", - currentPos, 0)
-				fgTexture:ClearAllPoints()
-				fgTexture:SetPoint("Bottom", frame, "Bottom", - currentPos, 0)
+				--bgTexture:ClearAllPoints()
+				--bgTexture:SetPoint("Center", frame, "Center", - currentPos, 0)
+				--fgTexture:ClearAllPoints()
+				--fgTexture:SetPoint("Bottom", frame, "Bottom", - currentPos, 0)
+				frame:SetPoint("Center", DevilMayCryVars.x - currentPos, DevilMayCryVars.y)
 			else
 				if not time then
 					time = GetTime()
@@ -285,28 +276,48 @@ do
 				end
 			end
 			currentSpPos = currentSpPos + 0.15
+			if currentRank == 6 then
+				extraSTexture:Show()
+			elseif currentRank == 7 then
+				extraSTexture:Show()
+				extraSSTexture:Show()
+			else
+				extraSTexture:Hide()
+				extraSSTexture:Hide()
+			end
 			spTexture:ClearAllPoints()
-			spTexture:SetPoint("Right", bgframe, "Right", 150 - currentSpPos, - 5)
+			spTexture:SetPoint("Right", spframe, "Right", 150 - currentSpPos, - 5)
 		end
 		if slideAnimEnded then
 			currentPos = currentPos - 14
+			if currentRank == 6 then
+				extraSTexture:Show()
+			elseif currentRank == 7 then
+				extraSTexture:Show()
+				extraSSTexture:Show()
+			else
+				extraSTexture:Hide()
+				extraSSTexture:Hide()
+			end
 			spTexture:SetWidth(spTexture:GetWidth() - (currentPos / 10))
-			bgTexture:ClearAllPoints()
-			bgTexture:SetPoint("Center", frame, "Center", - currentPos, 0)
-			fgTexture:ClearAllPoints()
-			fgTexture:SetPoint("Bottom", frame, "Bottom", - currentPos, 0)
+			--bgTexture:ClearAllPoints()
+			--bgTexture:SetPoint("Center", frame, "Center", - currentPos, 0)
+			--fgTexture:ClearAllPoints()
+			--fgTexture:SetPoint("Bottom", frame, "Bottom", - currentPos, 0)
+			frame:SetPoint("Center", DevilMayCryVars.x - currentPos, DevilMayCryVars.y)
 			if currentPos < 0 then
 				currentPos = 0
 				currentSpPos = 0
 				slideAnimEnded = false
 				extraSTexture:Hide()
 				extraSSTexture:Hide()
-				bgTexture:SetAllPoints(frame)
-				fgTexture:SetPoint("Bottom", frame, "Bottom")
+				--bgTexture:SetAllPoints(frame)
+				--fgTexture:SetPoint("Bottom", frame, "Bottom")
+				frame:SetPoint("Center", DevilMayCryVars.x, DevilMayCryVars.y)
 				spTexture:Hide()
 				spTexture:SetWidth(700)
-				spTexture:ClearAllPoints()
-				spTexture:SetPoint("Right", bgframe, "Right", 150, - 5)
+				--spTexture:ClearAllPoints()
+				spTexture:SetPoint("Right", spframe, "Right", 150, - 5)
 			end
 		end
 	end)
@@ -321,7 +332,7 @@ do
 		end
 		timer = 0
 		if testMode then
-			DevilMayCry:IncreaseHeight(0.2)
+			DevilMayCry_IncreaseHeight(0.2)
 		end
 	end)
 end
