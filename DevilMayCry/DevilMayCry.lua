@@ -51,13 +51,13 @@ local currentSpPos = 0
 local time
 
 local currentRelativePos = {
-	[1] = 250, -- Dirty!
-	[2] = 260, -- Cruel!
-	[3] = 270, -- Brutal!
-	[4] = 270, -- Anarhic!
-	[5] = 260, -- Savage!
+	[1] = 160, -- Dirty!
+	[2] = 160, -- Cruel!
+	[3] = 200, -- Brutal!
+	[4] = 240, -- Anarhic!
+	[5] = 200, -- Savage!
 	[6] = 280, -- Sadistic!
-	[7] = 310  -- Sensational!
+	[7] = 400  -- Sensational!
 }
 
 local backgroundTextures = {
@@ -125,7 +125,7 @@ local extraSBTexture = frame:CreateTexture(nil, "Background")
 extraSBTexture:SetTexture([[Interface\Addons\DevilMayCry\Textures\SB]])
 extraSBTexture:SetWidth(BASE_SIZE)
 extraSBTexture:SetHeight(BASE_SIZE)
-extraSBTexture:SetPoint("Right", frame, "Left", 50, 0)
+extraSBTexture:SetPoint("Center", frame, "Center", - 80, 0)
 extraSBTexture:SetDrawLayer("Background", 6)
 extraSBTexture:Hide()
 
@@ -133,7 +133,7 @@ local extraSFTexture = frame:CreateTexture(nil, "Background")
 extraSFTexture:SetTexture([[Interface\Addons\DevilMayCry\Textures\SF]])
 extraSFTexture:SetWidth(BASE_SIZE)
 extraSFTexture:SetHeight(BASE_SIZE)
-extraSFTexture:SetPoint("Right", frame, "Left", 50, 0)
+extraSFTexture:SetPoint("Bottom", extraSBTexture, "Bottom")
 extraSFTexture:SetDrawLayer("Background", 7)
 extraSFTexture:Hide()
 
@@ -141,7 +141,7 @@ local extraSSBTexture = frame:CreateTexture(nil, "Background")
 extraSSBTexture:SetTexture([[Interface\Addons\DevilMayCry\Textures\SB]])
 extraSSBTexture:SetWidth(BASE_SIZE)
 extraSSBTexture:SetHeight(BASE_SIZE)
-extraSSBTexture:SetPoint("Right", extraSFTexture, "Left", 50, 0)
+extraSSBTexture:SetPoint("Center", extraSBTexture, "Center", - 80, 0)
 extraSSBTexture:SetDrawLayer("Background", 6)
 extraSSBTexture:Hide()
 
@@ -149,9 +149,75 @@ local extraSSFTexture = frame:CreateTexture(nil, "Background")
 extraSSFTexture:SetTexture([[Interface\Addons\DevilMayCry\Textures\SF]])
 extraSSFTexture:SetWidth(BASE_SIZE)
 extraSSFTexture:SetHeight(BASE_SIZE)
-extraSSFTexture:SetPoint("Right", extraSFTexture, "Left", 50, 0)
+extraSSFTexture:SetPoint("Bottom", extraSSBTexture, "Bottom")
 extraSSFTexture:SetDrawLayer("Background", 7)
 extraSSFTexture:Hide()
+
+local letter1Texture = frame:CreateTexture(nil, "Background")
+letter1Texture:SetWidth(80)
+letter1Texture:SetHeight(80)
+letter1Texture:SetPoint("Left", frame, "Center", - 25, 20)
+letter1Texture:SetDrawLayer("Background", 5)
+
+local letter2Texture = frame:CreateTexture(nil, "Background")
+letter2Texture:SetWidth(80)
+letter2Texture:SetHeight(80)
+letter2Texture:SetPoint("Left", letter1Texture, "Center", - 35, 0)
+letter2Texture:SetDrawLayer("Background", 4)
+
+local letter3Texture = frame:CreateTexture(nil, "Background")
+letter3Texture:SetWidth(80)
+letter3Texture:SetHeight(80)
+letter3Texture:SetPoint("Left", letter2Texture, "Center", - 35, 0)
+letter3Texture:SetDrawLayer("Background", 3)
+
+local letter4Texture = frame:CreateTexture(nil, "Background")
+letter4Texture:SetWidth(80)
+letter4Texture:SetHeight(80)
+letter4Texture:SetPoint("Left", letter3Texture, "Center", - 35, 0)
+letter4Texture:SetDrawLayer("Background", 2)
+
+local letter5Texture = frame:CreateTexture(nil, "Background")
+letter5Texture:SetWidth(80)
+letter5Texture:SetHeight(80)
+letter5Texture:SetPoint("Left", letter4Texture, "Center", - 35, 0)
+letter5Texture:SetDrawLayer("Background", 1)
+
+local letter6Texture = frame:CreateTexture(nil, "Background")
+letter6Texture:SetWidth(80)
+letter6Texture:SetHeight(80)
+letter6Texture:SetPoint("Left", letter5Texture, "Center", - 35, 0)
+letter6Texture:SetDrawLayer("Background", 0)
+
+local letter7Texture = frame:CreateTexture(nil, "Background")
+letter7Texture:SetWidth(80)
+letter7Texture:SetHeight(80)
+letter7Texture:SetPoint("Left", letter6Texture, "Center", - 35, 0)
+letter7Texture:SetDrawLayer("Background", - 1)
+
+local letter8Texture = frame:CreateTexture(nil, "Background")
+letter8Texture:SetWidth(80)
+letter8Texture:SetHeight(80)
+letter8Texture:SetPoint("Left", letter7Texture, "Center", - 35, 0)
+letter8Texture:SetDrawLayer("Background", - 2)
+
+local letter9Texture = frame:CreateTexture(nil, "Background")
+letter9Texture:SetWidth(80)
+letter9Texture:SetHeight(80)
+letter9Texture:SetPoint("Left", letter8Texture, "Center", - 35, 0)
+letter9Texture:SetDrawLayer("Background", - 3)
+
+local letter10Texture = frame:CreateTexture(nil, "Background")
+letter10Texture:SetWidth(80)
+letter10Texture:SetHeight(80)
+letter10Texture:SetPoint("Left", letter9Texture, "Center", - 35, 0)
+letter10Texture:SetDrawLayer("Background", - 4)
+
+local letter11Texture = frame:CreateTexture(nil, "Background")
+letter11Texture:SetWidth(80)
+letter11Texture:SetHeight(80)
+letter11Texture:SetPoint("Left", letter10Texture, "Center", - 25, 0)
+letter11Texture:SetDrawLayer("Background", - 5)
 
 local spframe = CreateFrame("Frame", nil, UIParent)
 spframe:SetPoint("Center", DevilMayCryVars.x, DevilMayCryVars.y)
@@ -187,77 +253,6 @@ frame:SetScript("OnMouseUp", function(self, button)
 		DevilMayCryVars.sound = not DevilMayCryVars.sound
 	end
 end)
-
-function DevilMayCry_IncreaseHeight(percent)
-	percentCompleted = percentCompleted + percent
-	WIDTH_SCALE = 1.12
-end
-
-local letter1Texture = frame:CreateTexture(nil, "Background")
-letter1Texture:SetWidth(80)
-letter1Texture:SetHeight(80)
-letter1Texture:SetPoint("Left", frame, "Center", 0, 15)
-letter1Texture:SetDrawLayer("Background", 5)
-
-local letter2Texture = frame:CreateTexture(nil, "Background")
-letter2Texture:SetWidth(80)
-letter2Texture:SetHeight(80)
-letter2Texture:SetPoint("Left", letter1Texture, "Center", - 25, 0)
-letter2Texture:SetDrawLayer("Background", 4)
-
-local letter3Texture = frame:CreateTexture(nil, "Background")
-letter3Texture:SetWidth(80)
-letter3Texture:SetHeight(80)
-letter3Texture:SetPoint("Left", letter2Texture, "Center", - 25, 0)
-letter3Texture:SetDrawLayer("Background", 3)
-
-local letter4Texture = frame:CreateTexture(nil, "Background")
-letter4Texture:SetWidth(80)
-letter4Texture:SetHeight(80)
-letter4Texture:SetPoint("Left", letter3Texture, "Center", - 25, 0)
-letter4Texture:SetDrawLayer("Background", 2)
-
-local letter5Texture = frame:CreateTexture(nil, "Background")
-letter5Texture:SetWidth(80)
-letter5Texture:SetHeight(80)
-letter5Texture:SetPoint("Left", letter4Texture, "Center", - 25, 0)
-letter5Texture:SetDrawLayer("Background", 1)
-
-local letter6Texture = frame:CreateTexture(nil, "Background")
-letter6Texture:SetWidth(80)
-letter6Texture:SetHeight(80)
-letter6Texture:SetPoint("Left", letter5Texture, "Center", - 25, 0)
-letter6Texture:SetDrawLayer("Background", 0)
-
-local letter7Texture = frame:CreateTexture(nil, "Background")
-letter7Texture:SetWidth(80)
-letter7Texture:SetHeight(80)
-letter7Texture:SetPoint("Left", letter6Texture, "Center", - 25, 0)
-letter7Texture:SetDrawLayer("Background", - 1)
-
-local letter8Texture = frame:CreateTexture(nil, "Background")
-letter8Texture:SetWidth(80)
-letter8Texture:SetHeight(80)
-letter8Texture:SetPoint("Left", letter7Texture, "Center", - 25, 0)
-letter8Texture:SetDrawLayer("Background", - 2)
-
-local letter9Texture = frame:CreateTexture(nil, "Background")
-letter9Texture:SetWidth(80)
-letter9Texture:SetHeight(80)
-letter9Texture:SetPoint("Left", letter8Texture, "Center", - 25, 0)
-letter9Texture:SetDrawLayer("Background", - 3)
-
-local letter10Texture = frame:CreateTexture(nil, "Background")
-letter10Texture:SetWidth(80)
-letter10Texture:SetHeight(80)
-letter10Texture:SetPoint("Left", letter9Texture, "Center", - 25, 0)
-letter10Texture:SetDrawLayer("Background", - 4)
-
-local letter11Texture = frame:CreateTexture(nil, "Background")
-letter11Texture:SetWidth(80)
-letter11Texture:SetHeight(80)
-letter11Texture:SetPoint("Left", letter10Texture, "Center", - 25, 0)
-letter11Texture:SetDrawLayer("Background", - 5)
 
 function DevilMayCry:SetLetters()
 	if currentRank == 1 then
@@ -443,13 +438,121 @@ function DevilMayCry:SetLetters()
 	end
 end
 
-function DevilMayCry:TestMode()
-	if bgTexture:GetTexture() ~= backgroundTextures[currentRank] then
-		bgTexture:SetTexture(backgroundTextures[currentRank])
+function DevilMayCry:SetLetterPositions()
+	if currentRank == 1 then
+		letter4Texture:ClearAllPoints()
+		letter4Texture:SetPoint("Left", frame, "Center", currentPos, 20)
+		letter3Texture:ClearAllPoints()
+		letter3Texture:SetPoint("Left", frame, "Center", currentPos / 1.35, 20)
+		letter2Texture:ClearAllPoints()
+		letter2Texture:SetPoint("Left", frame, "Center", currentPos / 2.1, 20)
+		letter1Texture:ClearAllPoints()
+		letter1Texture:SetPoint("Left", frame, "Center", currentPos / 4.8, 20)
+		letter5Texture:ClearAllPoints()
+		letter5Texture:SetPoint("Left", frame, "Center", currentPos * 1.2, 20)
+	elseif currentRank == 2 then
+		letter4Texture:ClearAllPoints()
+		letter4Texture:SetPoint("Left", frame, "Center", currentPos, 20)
+		letter3Texture:ClearAllPoints()
+		letter3Texture:SetPoint("Left", frame, "Center", currentPos / 1.35, 20)
+		letter2Texture:ClearAllPoints()
+		letter2Texture:SetPoint("Left", frame, "Center", currentPos / 2.1, 20)
+		letter1Texture:ClearAllPoints()
+		letter1Texture:SetPoint("Left", frame, "Center", currentPos / 4.8, 20)
+		letter5Texture:ClearAllPoints()
+		letter5Texture:SetPoint("Left", frame, "Center", currentPos * 1.2, 20)
+	elseif currentRank == 3 then
+		letter5Texture:ClearAllPoints()
+		letter5Texture:SetPoint("Left", frame, "Center", currentPos, 20)
+		letter4Texture:ClearAllPoints()
+		letter4Texture:SetPoint("Left", frame, "Center", currentPos / 1.3, 20)
+		letter3Texture:ClearAllPoints()
+		letter3Texture:SetPoint("Left", frame, "Center", currentPos / 1.8, 20)
+		letter2Texture:ClearAllPoints()
+		letter2Texture:SetPoint("Left", frame, "Center", currentPos / 2.7, 20)
+		letter1Texture:ClearAllPoints()
+		letter1Texture:SetPoint("Left", frame, "Center", currentPos / 6.4, 20)
+		letter6Texture:ClearAllPoints()
+		letter6Texture:SetPoint("Left", frame, "Center", currentPos * 1.18, 20)
+	elseif currentRank == 4 then
+		letter6Texture:ClearAllPoints()
+		letter6Texture:SetPoint("Left", frame, "Center", currentPos, 20)
+		letter5Texture:ClearAllPoints()
+		letter5Texture:SetPoint("Left", frame, "Center", currentPos / 1.18, 20)
+		letter4Texture:ClearAllPoints()
+		letter4Texture:SetPoint("Left", frame, "Center", currentPos / 1.45, 20)
+		letter3Texture:ClearAllPoints()
+		letter3Texture:SetPoint("Left", frame, "Center", currentPos / 2.0, 20)
+		letter2Texture:ClearAllPoints()
+		letter2Texture:SetPoint("Left", frame, "Center", currentPos / 3.3, 20)
+		letter1Texture:ClearAllPoints()
+		letter1Texture:SetPoint("Left", frame, "Center", currentPos / 9.0, 20)
+		letter7Texture:ClearAllPoints()
+		letter7Texture:SetPoint("Left", frame, "Center", currentPos * 1.16, 20)
+	elseif currentRank == 5 then
+		letter5Texture:ClearAllPoints()
+		letter5Texture:SetPoint("Left", frame, "Center", currentPos, 20)
+		letter4Texture:ClearAllPoints()
+		letter4Texture:SetPoint("Left", frame, "Center", currentPos / 1.3, 20)
+		letter3Texture:ClearAllPoints()
+		letter3Texture:SetPoint("Left", frame, "Center", currentPos / 1.8, 20)
+		letter2Texture:ClearAllPoints()
+		letter2Texture:SetPoint("Left", frame, "Center", currentPos / 2.9, 20)
+		letter1Texture:ClearAllPoints()
+		letter1Texture:SetPoint("Left", frame, "Center", currentPos / 6.4, 20)
+		letter6Texture:ClearAllPoints()
+		letter6Texture:SetPoint("Left", frame, "Center", currentPos * 1.18, 20)
+	elseif currentRank == 6 then
+		letter7Texture:ClearAllPoints()
+		letter7Texture:SetPoint("Left", frame, "Center", currentPos, 20)
+		letter6Texture:ClearAllPoints()
+		letter6Texture:SetPoint("Left", frame, "Center", currentPos / 1.15, 20)
+		letter5Texture:ClearAllPoints()
+		letter5Texture:SetPoint("Left", frame, "Center", currentPos / 1.35, 20)
+		letter4Texture:ClearAllPoints()
+		letter4Texture:SetPoint("Left", frame, "Center", currentPos / 1.7, 20)
+		letter3Texture:ClearAllPoints()
+		letter3Texture:SetPoint("Left", frame, "Center", currentPos / 2.2, 20)
+		letter2Texture:ClearAllPoints()
+		letter2Texture:SetPoint("Left", frame, "Center", currentPos / 3.3, 20)
+		letter1Texture:ClearAllPoints()
+		letter1Texture:SetPoint("Left", frame, "Center", currentPos / 8, 20)
+		letter8Texture:ClearAllPoints()
+		letter8Texture:SetPoint("Left", frame, "Center", currentPos * 1.14, 20)
+	elseif currentRank == 7 then
+		letter10Texture:ClearAllPoints()
+		letter10Texture:SetPoint("Left", frame, "Center", currentPos, 20)
+		letter9Texture:ClearAllPoints()
+		letter9Texture:SetPoint("Left", frame, "Center", currentPos / 1.12, 20)
+		letter8Texture:ClearAllPoints()
+		letter8Texture:SetPoint("Left", frame, "Center", currentPos / 1.3, 20)
+		letter7Texture:ClearAllPoints()
+		letter7Texture:SetPoint("Left", frame, "Center", currentPos / 1.55, 20)
+		letter6Texture:ClearAllPoints()
+		letter6Texture:SetPoint("Left", frame, "Center", currentPos / 1.85, 20)
+		letter5Texture:ClearAllPoints()
+		letter5Texture:SetPoint("Left", frame, "Center", currentPos / 2.2, 20)
+		letter4Texture:ClearAllPoints()
+		letter4Texture:SetPoint("Left", frame, "Center", currentPos / 2.7, 20)
+		letter3Texture:ClearAllPoints()
+		letter3Texture:SetPoint("Left", frame, "Center", currentPos / 3.8, 20)
+		letter2Texture:ClearAllPoints()
+		letter2Texture:SetPoint("Left", frame, "Center", currentPos / 6, 20)
+		letter1Texture:ClearAllPoints()
+		letter1Texture:SetPoint("Left", frame, "Center", currentPos / 16, 20)
+		letter11Texture:ClearAllPoints()
+		letter11Texture:SetPoint("Left", frame, "Center", currentPos * 1.1, 20)
 	end
-	if fgTexture:GetTexture() ~= foregroundTextures[currentRank] then
-		fgTexture:SetTexture(foregroundTextures[currentRank])
-	end
+end
+
+function DevilMayCry:IncreaseHeight(percent)
+	percentCompleted = percentCompleted + percent
+	WIDTH_SCALE = 1.12
+end
+
+-- Test
+function DevilMayCry_IncreaseHeight(percent)
+	DevilMayCry:IncreaseHeight(percent)
 end
 
 frame:SetScript("OnEvent", function(self, event, ...)
@@ -485,8 +588,12 @@ do
 			end
 			currentScale = MAX_SCALE
 			percentCompleted = 0
-			-- Test loop
-			DevilMayCry:TestMode()
+			if bgTexture:GetTexture() ~= backgroundTextures[currentRank] then
+				bgTexture:SetTexture(backgroundTextures[currentRank])
+			end
+			if fgTexture:GetTexture() ~= foregroundTextures[currentRank] then
+				fgTexture:SetTexture(foregroundTextures[currentRank])
+			end
 			zoomAnimEnded = false
 			slideAnimEnded = false
 		end
@@ -494,16 +601,36 @@ do
 			-- Hide animation
 		end
 		if currentScale > 1 then
-			currentScale = currentScale - SCALE_DELTA
 			DevilMayCry:SetLetters()
+			currentScale = currentScale - SCALE_DELTA
 			if currentScale < 1 then
 				zoomAnimEnded = true
 				currentScale = 1
 			end
 			size = size * currentScale
 			SetSize(self, size, size)
+			SetSize(extraSBTexture, size, size)
+			SetSize(extraSFTexture, size, size)
+			SetSize(extraSSBTexture, size, size)
+			SetSize(extraSSFTexture, size, size)
+		end
+		if currentRank == 6 then
+			extraSFTexture:Show()
+			extraSBTexture:Show()
+		elseif currentRank == 7 then
+			extraSBTexture:Show()
+			extraSFTexture:Show()
+			extraSSBTexture:Show()
+			extraSSFTexture:Show()
+		else
+			extraSBTexture:Hide()
+			extraSFTexture:Hide()
+			extraSSBTexture:Hide()
+			extraSSFTexture:Hide()
 		end
 		SetSize(fgTexture, size * WIDTH_SCALE, size * percentCompleted)
+		SetSize(extraSFTexture, size * WIDTH_SCALE, size * percentCompleted)
+		SetSize(extraSSFTexture, size * WIDTH_SCALE, size * percentCompleted)
 		if WIDTH_SCALE > 1 then
 			WIDTH_SCALE = WIDTH_SCALE - WIDTH_DELTA
 			if WIDTH_SCALE < 1 then
@@ -512,8 +639,12 @@ do
 		end
 		if currentScale == 1 then
 			SetSize(self, size, size)
+			SetSize(extraSBTexture, size, size)
+			SetSize(extraSSBTexture, size, size)
 		end
 		SetTexCoord(fgTexture, 0, 1, 1 - percentCompleted, 1)
+		SetTexCoord(extraSFTexture, 0, 1, 1 - percentCompleted, 1)
+		SetTexCoord(extraSSFTexture, 0, 1, 1 - percentCompleted, 1)
 	end)
 end
 
@@ -531,23 +662,7 @@ do
 				spTexture:Show()
 				spTexture:SetWidth(spTexture:GetWidth() + (currentPos / 14))
 				frame:SetPoint("Center", DevilMayCryVars.x - currentPos, DevilMayCryVars.y)
-				local divider
-				if currentRank == 7 then
-					divider = 100
-				else
-					divider = 30
-				end
-				letter1Texture:SetPoint("Left", frame, "Center", currentPos / 8, 15)
-				letter2Texture:SetPoint("Left", letter1Texture, "Center", currentPos / divider, 0)
-				letter3Texture:SetPoint("Left", letter2Texture, "Center", currentPos / divider, 0)
-				letter4Texture:SetPoint("Left", letter3Texture, "Center", currentPos / divider, 0)
-				letter5Texture:SetPoint("Left", letter4Texture, "Center", currentPos / divider, 0)
-				letter6Texture:SetPoint("Left", letter5Texture, "Center", currentPos / divider, 0)
-				letter7Texture:SetPoint("Left", letter6Texture, "Center", currentPos / divider, 0)
-				letter8Texture:SetPoint("Left", letter7Texture, "Center", currentPos / divider, 0)
-				letter9Texture:SetPoint("Left", letter8Texture, "Center", currentPos / divider, 0)
-				letter10Texture:SetPoint("Left", letter9Texture, "Center", currentPos / divider, 0)
-				letter11Texture:SetPoint("Left", letter10Texture, "Center", currentPos / divider, 0)
+				DevilMayCry:SetLetterPositions()
 			else
 				if not time then
 					time = GetTime()
@@ -560,82 +675,41 @@ do
 				end
 			end
 			currentSpPos = currentSpPos + 0.15
-			if currentRank == 6 then
-				extraSBTexture:Show()
-				extraSFTexture:Show()
-			elseif currentRank == 7 then
-				extraSBTexture:Show()
-				extraSFTexture:Show()
-				extraSSBTexture:Show()
-				extraSSFTexture:Show()
-			else
-				extraSBTexture:Hide()
-				extraSFTexture:Hide()
-				extraSSBTexture:Hide()
-				extraSSFTexture:Hide()
-			end
 			spTexture:ClearAllPoints()
 			spTexture:SetPoint("Right", spframe, "Right", 150 - currentSpPos, - 5)
 		end
 		if slideAnimEnded then
 			currentPos = currentPos - 14
-			if currentRank == 6 then
-				extraSFTexture:Show()
-			elseif currentRank == 7 then
-				extraSBTexture:Show()
-				extraSFTexture:Show()
-				extraSSBTexture:Show()
-				extraSSFTexture:Show()
-			else
-				extraSBTexture:Hide()
-				extraSFTexture:Hide()
-				extraSSBTexture:Hide()
-				extraSSFTexture:Hide()
-			end
-			letter1Texture:SetAlpha(letter1Texture:GetAlpha() - 0.05)
-			letter2Texture:SetAlpha(letter1Texture:GetAlpha() - 0.05)
-			letter3Texture:SetAlpha(letter1Texture:GetAlpha() - 0.05)
-			letter4Texture:SetAlpha(letter1Texture:GetAlpha() - 0.05)
-			letter5Texture:SetAlpha(letter1Texture:GetAlpha() - 0.05)
-			letter6Texture:SetAlpha(letter1Texture:GetAlpha() - 0.05)
-			letter7Texture:SetAlpha(letter1Texture:GetAlpha() - 0.05)
-			letter8Texture:SetAlpha(letter1Texture:GetAlpha() - 0.05)
-			letter9Texture:SetAlpha(letter1Texture:GetAlpha() - 0.05)
-			letter10Texture:SetAlpha(letter1Texture:GetAlpha() - 0.05)
-			letter11Texture:SetAlpha(letter1Texture:GetAlpha() - 0.05)
+			letter1Texture:SetAlpha(letter1Texture:GetAlpha() - 0.075)
+			letter2Texture:SetAlpha(letter2Texture:GetAlpha() - 0.075)
+			letter3Texture:SetAlpha(letter3Texture:GetAlpha() - 0.075)
+			letter4Texture:SetAlpha(letter4Texture:GetAlpha() - 0.075)
+			letter5Texture:SetAlpha(letter5Texture:GetAlpha() - 0.075)
+			letter6Texture:SetAlpha(letter6Texture:GetAlpha() - 0.075)
+			letter7Texture:SetAlpha(letter7Texture:GetAlpha() - 0.075)
+			letter8Texture:SetAlpha(letter8Texture:GetAlpha() - 0.075)
+			letter9Texture:SetAlpha(letter9Texture:GetAlpha() - 0.075)
+			letter10Texture:SetAlpha(letter10Texture:GetAlpha() - 0.075)
+			letter11Texture:SetAlpha(letter11Texture:GetAlpha() - 0.075)
 			spTexture:SetWidth(spTexture:GetWidth() - (currentPos / 10))
 			frame:SetPoint("Center", DevilMayCryVars.x - currentPos, DevilMayCryVars.y)
-			letter1Texture:SetPoint("Left", frame, "Center", currentPos / 8, 15)
-			letter2Texture:SetPoint("Left", letter1Texture, "Center", - currentPos / 15, 0)
-			letter3Texture:SetPoint("Left", letter2Texture, "Center", - currentPos / 15, 0)
-			letter4Texture:SetPoint("Left", letter3Texture, "Center", - currentPos / 15, 0)
-			letter5Texture:SetPoint("Left", letter4Texture, "Center", - currentPos / 15, 0)
-			letter6Texture:SetPoint("Left", letter5Texture, "Center", - currentPos / 15, 0)
-			letter7Texture:SetPoint("Left", letter6Texture, "Center", - currentPos / 15, 0)
-			letter8Texture:SetPoint("Left", letter7Texture, "Center", - currentPos / 15, 0)
-			letter9Texture:SetPoint("Left", letter8Texture, "Center", - currentPos / 15, 0)
-			letter10Texture:SetPoint("Left", letter9Texture, "Center", - currentPos / 15, 0)
-			letter11Texture:SetPoint("Left", letter10Texture, "Center", - currentPos / 15, 0)
+			DevilMayCry:SetLetterPositions()
 			if currentPos < 0 then
 				currentPos = 0
 				currentSpPos = 0
 				slideAnimEnded = false
-				extraSBTexture:Hide()
-				extraSFTexture:Hide()
-				extraSSBTexture:Hide()
-				extraSSFTexture:Hide()
 				frame:SetPoint("Center", DevilMayCryVars.x, DevilMayCryVars.y)
-				letter1Texture:SetPoint("Left", frame, "Center", 0, 15)
-				letter2Texture:SetPoint("Left", letter1Texture, "Center", - 25, 0)
-				letter3Texture:SetPoint("Left", letter2Texture, "Center", - 25, 0)
-				letter4Texture:SetPoint("Left", letter3Texture, "Center", - 25, 0)
-				letter5Texture:SetPoint("Left", letter4Texture, "Center", - 25, 0)
-				letter6Texture:SetPoint("Left", letter5Texture, "Center", - 25, 0)
-				letter7Texture:SetPoint("Left", letter6Texture, "Center", - 25, 0)
-				letter8Texture:SetPoint("Left", letter7Texture, "Center", - 25, 0)
-				letter9Texture:SetPoint("Left", letter8Texture, "Center", - 25, 0)
-				letter10Texture:SetPoint("Left", letter9Texture, "Center", - 25, 0)
-				letter11Texture:SetPoint("Left", letter10Texture, "Center", - 25, 0)
+				letter1Texture:SetPoint("Left", frame, "Center", - 25, 20)
+				letter2Texture:SetPoint("Left", letter1Texture, "Center", - 35, 0)
+				letter3Texture:SetPoint("Left", letter2Texture, "Center", - 35, 0)
+				letter4Texture:SetPoint("Left", letter3Texture, "Center", - 35, 0)
+				letter5Texture:SetPoint("Left", letter4Texture, "Center", - 35, 0)
+				letter6Texture:SetPoint("Left", letter5Texture, "Center", - 35, 0)
+				letter7Texture:SetPoint("Left", letter6Texture, "Center", - 35, 0)
+				letter8Texture:SetPoint("Left", letter7Texture, "Center", - 35, 0)
+				letter9Texture:SetPoint("Left", letter8Texture, "Center", - 35, 0)
+				letter10Texture:SetPoint("Left", letter9Texture, "Center", - 35, 0)
+				letter11Texture:SetPoint("Left", letter10Texture, "Center", - 35, 0)
 				letter1Texture:Hide()
 				letter2Texture:Hide()
 				letter3Texture:Hide()
@@ -664,7 +738,7 @@ do
 		end
 		timer = 0
 		if testMode then
-			DevilMayCry_IncreaseHeight(0.25)
+			DevilMayCry:IncreaseHeight(0.25)
 		end
 	end)
 end
